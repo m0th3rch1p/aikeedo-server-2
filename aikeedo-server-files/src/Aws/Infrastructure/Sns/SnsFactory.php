@@ -31,7 +31,6 @@ class SnsFactory implements SnsFactoryInterface
 
     public function register(string $service): self
     {
-        // TODO: Implement register() method.
         $this->services[] = $service;
         return $this;
     }

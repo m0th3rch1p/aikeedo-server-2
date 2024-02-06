@@ -14,19 +14,16 @@ class SubscriptionSnsService implements SnsServiceInterface
 
     public function getEndpoint(): string
     {
-        // TODO: Implement getEndpoint() method.
         return $this->endpoint;
     }
 
     public function getProtocol(): string
     {
-        // TODO: Implement getProtocol() method.
         return $this->protocol;
     }
 
     public function getTopicArn(): string
     {
-        // TODO: Implement getTopicArn() method.
         return $this->topicArn;
     }
 }

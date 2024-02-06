@@ -46,11 +46,11 @@ class AwsModuleBootstrapper implements BootstrapperInterface
         );
 
         $this->app->set(AwsUsageRepositoryInterface::class, AwsUsageRepository::class);
-        try {
-            $this->resolveSnsServices();
-        } catch (NotFoundExceptionInterface | ContainerExceptionInterface $e) {
-            die($e);
-        }
+//        try {
+//            $this->resolveSnsServices();
+//        } catch (NotFoundExceptionInterface | ContainerExceptionInterface $e) {
+//            die($e);
+//        }
     }
 
     /**

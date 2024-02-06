@@ -82,4 +82,9 @@ class SnsFactory implements SnsFactoryInterface
         $this->logger->debug('Confirmation for topic '.$topicArn.' confirmed');
         return $results;
     }
+
+    public function getSubscribedEndpoints(): array
+    {
+        return $this->subscribedEndpoints;
+    }
 }

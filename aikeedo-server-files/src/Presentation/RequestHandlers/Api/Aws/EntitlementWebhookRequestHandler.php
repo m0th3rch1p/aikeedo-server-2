@@ -22,7 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Shared\Infrastructure\CommandBus\Dispatcher;
 
-#[Route(path: "/entitlement/webhook", method: RequestMethod::POST)]
+#[Route(path: "/ent/webhook", method: RequestMethod::POST)]
 class EntitlementWebhookRequestHandler extends AwsApi implements  RequestHandlerInterface
 {
     public function __construct (private LoggerInterface $logger, private EntitlementService $service, private Dispatcher $dispatcher, private SnsFactory $snsFactory) {

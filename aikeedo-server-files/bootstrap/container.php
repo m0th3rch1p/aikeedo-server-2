@@ -33,8 +33,9 @@ $config->set('dirs', [
 $config->set("enable_debugging", env('DEBUG', false));
 $config->set('enable_caching', env('CACHE', false));
 
-$lc = json_decode(file_get_contents($rootDir . '/locale/locale.json'), true);
-$config->set('locale', $lc);
+//$lc = json_decode(file_get_contents($rootDir . '/locale/locale.json'), true);
+$config->set('locale', null);
+
 
 // Setup container.
 $container = new Container();

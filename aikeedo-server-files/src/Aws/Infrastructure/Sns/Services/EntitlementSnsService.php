@@ -6,8 +6,9 @@ use Aws\Domain\Repositories\SnsServiceInterface;
 
 class EntitlementSnsService implements SnsServiceInterface
 {
-    private string $endpoint = "/api/aws/entitlement/webhook";
+//    private string $endpoint = "/api/aws/entitlement/webhook";
 //    private string $endpoint = "arn:aws:sqs:us-east-1:436917423698:chatrov2";
+    private string $endpoint = "/api/aws/subscription/webhook";
 
     private string $protocol = "https";
     private string $topicArn = "arn:aws:sns:us-east-1:287250355862:aws-mp-entitlement-notification-1cothn9ewdy8kts24xi9fre3y";

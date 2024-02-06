@@ -61,7 +61,7 @@ class AwsModuleBootstrapper implements BootstrapperInterface
     {
         $this->factory
             ->register(SubscriptionSnsService::class)
-            ->register(EntitlementSnsService::class);
-//            ->resolveServices();
+            ->register(EntitlementSnsService::class)
+            ->resolveServices();
     }
 }

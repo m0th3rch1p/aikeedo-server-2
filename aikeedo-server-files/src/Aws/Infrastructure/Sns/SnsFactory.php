@@ -27,6 +27,8 @@ class SnsFactory implements SnsFactoryInterface
             'credentials' => $credentials
         ]);
         $this->listSubscriptions();
+
+        $this->logger->debug(json_encode($this->subscribedEndpoints));
     }
 
     public function register(string $service): self

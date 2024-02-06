@@ -57,7 +57,8 @@ class SnsFactory implements SnsFactoryInterface
         $this->subscribedEndpoints = array_column($subscriptions, 'Endpoint');
     }
 
-    public function subscribeService (SnsServiceInterface $service) {
+    public function subscribeService (SnsServiceInterface $service): void
+    {
         $endpoint = $service->getProtocol() === "https" ? $this->baseUrl.$service->getEndpoint() : $service->getEndpoint() ;
         if (!(in_array($endpoint, $this->subscribedEndpoints))) {
             $this->client->subscribe([
@@ -65,15 +66,19 @@ class SnsFactory implements SnsFactoryInterface
                 'Endpoint' => $endpoint,
                 'TopicArn' => $service->getTopicArn()
             ]);
-            $this->logger->debug("New Subscription for endpoint".$service->getProtocol());
+            $this->logger->debug("New Subscription for endpoint".$endpoint);
+            return;
         }
+        $this->logger->debug('Subscription for '.$endpoint.' already confirmed');
     }
 
     public function confirmSubscription ($token, $topicArn): \Aws\Result
     {
-        return $this->client->confirmSubscription([
+        $results = $this->client->confirmSubscription([
             'Token' => $token,
             'TopicArn' => $topicArn
         ]);
+        $this->logger->debug('Confirmation for topic '.$topicArn.' confirmed');
+        return $results;
     }
 }

@@ -18,7 +18,7 @@ class SnsFactory implements SnsFactoryInterface
     private SnsClient $client;
     private array $services = [];
     private array $subscribedEndpoints = [];
-    public function __construct (private ContainerInterface $container, private LoggerInterface $logger) {
+    public function __construct (private ContainerInterface $container) {
         $this->baseUrl = env('ENVIRONMENT') === 'dev' ? env('SNS_WEBHOOK_URL_DEV') : env('SNS_WEBHOOK_URL_PROD');
         $credentials = new Credentials(env('AWS_KEY'), env('AWS_SECRET'));
         $this->client = new SnsClient([
@@ -28,7 +28,7 @@ class SnsFactory implements SnsFactoryInterface
         ]);
         $this->listSubscriptions();
 
-        $this->logger->debug(json_encode($this->subscribedEndpoints));
+//        $this->logger->debug(json_encode($this->subscribedEndpoints));
     }
 
     public function register(string $service): self
@@ -67,10 +67,10 @@ class SnsFactory implements SnsFactoryInterface
                 'Endpoint' => $endpoint,
                 'TopicArn' => $service->getTopicArn()
             ]);
-            $this->logger->debug("New Subscription for endpoint".$endpoint);
+//            $this->logger->debug("New Subscription for endpoint".$endpoint);
             return;
         }
-        $this->logger->debug('Subscription for '.$endpoint.' already confirmed');
+//        $this->logger->debug('Subscription for '.$endpoint.' already confirmed');
     }
 
     public function confirmSubscription ($token, $topicArn): \Aws\Result
@@ -79,7 +79,7 @@ class SnsFactory implements SnsFactoryInterface
             'Token' => $token,
             'TopicArn' => $topicArn
         ]);
-        $this->logger->debug('Confirmation for topic '.$topicArn.' confirmed');
+//        $this->logger->debug('Confirmation for topic '.$topicArn.' confirmed');
         return $results;
     }
 

@@ -6,6 +6,7 @@ use Aws\Application\Commands\ReadByCustomerIdAwsCommand;
 use Aws\Domain\Helpers\SubscriptionSnsHelper;
 use Aws\Infrastructure\Services\EntitlementService;
 use Aws\Infrastructure\Services\SubscriptionSnsService;
+use Aws\Infrastructure\Sns\SnsFactory;
 use Billing\Application\Commands\ActivateSubscriptionCommand;
 use Billing\Application\Commands\CancelSubscriptionCommand;
 use Easy\Http\Message\RequestMethod;
@@ -20,7 +21,7 @@ use Shared\Infrastructure\CommandBus\Dispatcher;
 #[Route(path: "/subscription/webhook", method: RequestMethod::POST)]
 class SubscriptionWebhookRequestHandler extends AwsApi implements  RequestHandlerInterface
 {
-    public function __construct(private LoggerInterface $logger, private Dispatcher $dispatcher, private SubscriptionSnsService $subscriptionSnsService)
+    public function __construct(private LoggerInterface $logger, private Dispatcher $dispatcher, private SnsFactory $snsFactory)
     {
     }
 
@@ -31,7 +32,7 @@ class SubscriptionWebhookRequestHandler extends AwsApi implements  RequestHandle
         switch ($data->Type) {
             case 'SubscriptionConfirmation':
                 //Confirm Subscription To Arn
-                $this->subscriptionSnsService->confirmSubscription($data->Token, $data->TopicArn);
+                $this->snsFactory->confirmSubscription($data->Token, $data->TopicArn);
                 $this->logger->debug("subscription added");
                 break;
             case 'SubscribeSuccess':

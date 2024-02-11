@@ -14,7 +14,7 @@ class AuthResponse extends JsonResponse
 {
     public function __construct(UserEntity $user)
     {
-        $jwt = new UserJwt((string) $user->getId()->getValue(), $user->getRole() === Role::ADMIN, $user->getaws() !== null);
+        $jwt = new UserJwt((string) $user->getId()->getValue(), $user->getRole() === Role::ADMIN);
         $tokenString = $jwt->getJwtString();
         $cookie = new UserCookie($tokenString);
 

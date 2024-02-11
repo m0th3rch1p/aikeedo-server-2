@@ -666,7 +666,7 @@ class UserEntity
         return new Count($count);
     }
 
-    public function getAws(): ?AwsEntity
+    public function getaws(): ?AwsEntity
     {
         return $this->aws;
     }

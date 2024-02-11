@@ -92,7 +92,6 @@ class UserMiddleware implements MiddlewareInterface
         } catch (UserNotFoundException $th) {
             return null;
         }
-
         return $user;
     }
 

@@ -320,7 +320,6 @@
 
         <div class="flex flex-col gap-6"
              x-show="{{trial and option.billing.trial_without_payment is defined and option.billing.trial_without_payment ? 'plan.billing_cycle == \'one-time\''  : 'true' }}">
-
           {% if auth_user.aws is not defined and option.stripe.is_enabled is defined and option.stripe.is_enabled  %}
             {% include "/snippets/checkout/stripe.twig" %}
           {% endif %}
@@ -339,7 +338,7 @@
           {% endif %}
 
           {% if auth_user.aws is defined %}
-            <h3>Error: Aws Billing Is Handled By AWS</h3>
+            <h3>Error: Billing Is Handled By AWS</h3>
           {% endif %}
         </div>
       </div>

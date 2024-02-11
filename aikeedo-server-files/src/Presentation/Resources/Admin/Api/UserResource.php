@@ -24,7 +24,6 @@ class UserResource implements JsonSerializable
     public function jsonSerialize(): mixed
     {
         $u = $this->user;
-
         return [
             'id' => $u->getId(),
             'first_name' => $u->getFirstName(),

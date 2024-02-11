@@ -67,7 +67,6 @@ class BasicAuthRequestHandler extends AuthApi implements
         if (!$this->userAccountsEnabled && $user->getRole() !== Role::ADMIN) {
             throw new UnauthorizedException();
         }
-
         return new AuthResponse($user);
     }
 

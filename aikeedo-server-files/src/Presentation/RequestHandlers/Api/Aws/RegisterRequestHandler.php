@@ -17,6 +17,7 @@ use Presentation\Exceptions\HttpException;
 use Presentation\Exceptions\NotFoundException;
 use Presentation\Response\Api\Auth\AuthResponse;
 use Presentation\Response\JsonResponse;
+use Presentation\Response\RedirectResponse;
 use Presentation\Validation\ValidationException;
 use Presentation\Validation\Validator;
 use Psr\Http\Message\ResponseInterface;
@@ -54,6 +55,16 @@ class RegisterRequestHandler extends AwsApi implements
 
         $payload = (object) $request->getParsedBody();
 
+        //CHeck if User Already Exists
+        $awsCmd = new ReadByCustomerIdAwsCommand($payload->c_id);
+        $aws = $this->dispatcher->dispatch($awsCmd);
+        if ($aws) {
+            //Redirect to login page
+            return new JsonResponse(json_encode([
+                'status' => false,
+            ]), StatusCode::FOUND);
+        }
+
         $cmd = new CreateUserCommand(
             $payload->email,
             $payload->first_name,
@@ -64,9 +75,6 @@ class RegisterRequestHandler extends AwsApi implements
 
         try {
             //Setup User Subscription
-            $awsCmd = new ReadByCustomerIdAwsCommand($payload->c_id);
-            $aws = $this->dispatcher->dispatch($awsCmd);
-
             $planCmd = new ReadPlanByTitleCommand($aws->getDimension());
             $plan = $this->dispatcher->dispatch($planCmd);
 

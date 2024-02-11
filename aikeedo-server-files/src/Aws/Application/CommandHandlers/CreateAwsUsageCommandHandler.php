@@ -29,7 +29,7 @@ class CreateAwsUsageCommandHandler
                 break;
         }
 
-        $customer_id = $cmd->user->getAws()->getCustomerId();
+        $customer_id = $cmd->user->getaws()->getCustomerId();
         $plan = $cmd->user->getActiveSubscription()->getPlan();
         $allocatedAudio = $plan->getAudioCredit()->value;
         $allocatedImages = $plan->getImageCredit()->value;

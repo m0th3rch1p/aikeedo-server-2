@@ -6009,7 +6009,7 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
                     if (params.c_id) data.append('c_id', params.c_id);
 
                     api.post(this.$refs.form.dataset.apiPath, data).then(function (response) {
-                        if (response.data.jwt) {
+                        if (response.data.status && response.data.jwt) {
                             var jwt = response.data.jwt;
                             var payload = o(jwt);
 
@@ -6030,6 +6030,11 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
                         var msg = 'An unexpected error occurred! Please try again later!';
                         if (error.response && error.response.status == 401) {
                             msg = "Authentication failed! Please check your credentials and try again!";
+                        }
+                        if (error.response && error.response.status === 302) {
+                            // Redirect user to the app or admin dashboard
+                            msg = "Account Already Exists";
+                            window.location.href = '/login';
                         }
                         if (error.response && error.response.data.message) {
                             msg = error.response.data.message;

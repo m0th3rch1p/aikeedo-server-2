@@ -69,7 +69,7 @@ class UserJwt
             'uuid' => $this->uuid,
             'iat' => time(),
             'jti' => Uuid::uuid4()->toString(),
-            'is_admin' => $this->isAdmin
+            'is_admin' => $this->isAdmin,
         ];
 
         if ($this->expiresAt) {

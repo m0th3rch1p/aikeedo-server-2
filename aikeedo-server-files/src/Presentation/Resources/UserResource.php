@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Presentation\Resources;
 
-use Generator;
 use Exception;
 use Traversable;
 use User\Domain\Entities\UserEntity;
@@ -30,7 +29,7 @@ class UserResource
 
     public readonly ?SubscriptionResource $subscription;
     public readonly Traversable $packs;
-
+    public readonly ?string $aws;
     /**
      * @param UserEntity $user 
      * @return void 
@@ -60,6 +59,7 @@ class UserResource
         $this->subscription = $user->getActiveSubscription()
             ? new SubscriptionResource($user->getActiveSubscription())
             : null;
+        $this->aws = $user->getaws() ? "true" : null;
 
         $this->packs = $this->getPacks();
     }

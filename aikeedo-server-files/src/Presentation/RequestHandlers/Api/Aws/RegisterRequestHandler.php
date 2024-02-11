@@ -87,6 +87,8 @@ class RegisterRequestHandler extends AwsApi implements
 
             $activateCmd = new ActivateSubscriptionCommand($user, $response->subscription->getId());
             $this->dispatcher->dispatch($activateCmd);
+
+            return new AuthResponse($user);
         } catch (EmailTakenException $th) {
             throw new HttpException(
                 message: $th->getMessage(),
@@ -95,8 +97,6 @@ class RegisterRequestHandler extends AwsApi implements
         } catch (NoHandlerFoundException $e) {
             return new JsonResponse($e->getMessage(), StatusCode::INTERNAL_SERVER_ERROR);
         }
-
-        return new AuthResponse($user);
     }
 
     /**

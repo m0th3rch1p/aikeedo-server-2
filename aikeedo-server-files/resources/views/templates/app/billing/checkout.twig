@@ -320,24 +320,24 @@
 
         <div class="flex flex-col gap-6"
              x-show="{{trial and option.billing.trial_without_payment is defined and option.billing.trial_without_payment ? 'plan.billing_cycle == \'one-time\''  : 'true' }}">
-          {% if auth_user.aws is not defined and option.stripe.is_enabled is defined and option.stripe.is_enabled  %}
+          {% if auth_user.aws == null and option.stripe.is_enabled is defined and option.stripe.is_enabled  %}
             {% include "/snippets/checkout/stripe.twig" %}
           {% endif %}
 
-          {% if auth_user.aws is not defined and option.stripe.is_enabled is defined and option.stripe.is_enabled  and option.paypal.is_enabled is defined and option.paypal.is_enabled  %}
+          {% if auth_user.aws == null and option.stripe.is_enabled is defined and option.stripe.is_enabled  and option.paypal.is_enabled is defined and option.paypal.is_enabled  %}
             <div
                     class="relative flex justify-center text-xs text-content-dimmed before:absolute before:left-0 before:top-1/2 before:w-full before:h-px before:bg-line-dimmed">
               <span class="relative z-10 px-4 bg-main">{{ __('OR') }}</span>
             </div>
           {% endif %}
 
-          {% if auth_user.aws is not defined and option.paypal.is_enabled is defined and option.paypal.is_enabled  %}
+          {% if auth_user.aws == null and option.paypal.is_enabled is defined and option.paypal.is_enabled  %}
             <div id="payment-buttons"></div>
 
             {% include "/snippets/checkout/paypal.twig" %}
           {% endif %}
 
-          {% if auth_user.aws is defined %}
+          {% if auth_user.aws is not null %}
             <h3>Error: Billing Is Handled By AWS</h3>
           {% endif %}
         </div>

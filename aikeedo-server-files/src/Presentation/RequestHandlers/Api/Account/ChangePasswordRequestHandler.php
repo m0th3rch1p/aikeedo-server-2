@@ -85,6 +85,7 @@ class ChangePasswordRequestHandler extends AccountApi implements
     {
         $this->validator->validateRequest($req, [
             'current_password' => 'required|string',
+            'confirm_password' => 'required|same:password',
             'password' => 'required|string'
         ]);
     }

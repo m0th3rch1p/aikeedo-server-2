@@ -85,8 +85,8 @@ class Application
      */
     public function boot(): void
     {
-        $this->registerAwsSubscribeSnsWebhooks();
-        $this->registerAwsEntitlementSnsWebhooks();
+//        $this->registerAwsSubscribeSnsWebhooks();
+//        $this->registerAwsEntitlementSnsWebhooks();
         $this->invokeServiceProviders();
         $this->invokeBootstrappers();
     }

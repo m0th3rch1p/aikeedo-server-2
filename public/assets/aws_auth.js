@@ -6030,12 +6030,18 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
                         var msg = 'An unexpected error occurred! Please try again later!';
                         if (error.response && error.response.status == 401) {
                             msg = "Authentication failed! Please check your credentials and try again!";
+                        } else if (error.response && error.response.status == 409) {
+                            msg = "Authentication failed: Aws User Already Registered. Please Login"
                         }
                         if (error.response && error.response.data.message) {
                             msg = error.response.data.message;
                         }
                         _this2.isProcessing = false;
                         window.toast.show(msg, 'ti ti-square-rounded-x-filled');
+
+                        if (error.response.status === 409) {
+                            window.location.href = "/login"
+                        }
                     });
                 },
                 checkIsSubmitable: function checkIsSubmitable() {

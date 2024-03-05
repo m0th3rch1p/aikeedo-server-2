@@ -9,6 +9,7 @@ use Billing\Application\Commands\ActivateSubscriptionCommand;
 use Billing\Application\Commands\CreateSubscriptionCommand;
 use Billing\Application\Commands\ReadPlanByTitleCommand;
 use Billing\Domain\ValueObjects\PaymentGateway;
+use Doctrine\ORM\NonUniqueResultException;
 use Easy\Container\Attributes\Inject;
 use Easy\Http\Message\RequestMethod;
 use Easy\Http\Message\StatusCode;
@@ -92,6 +93,8 @@ class RegisterRequestHandler extends AwsApi implements
                 message: $th->getMessage(),
                 param: 'email'
             );
+        } catch (NonUniqueResultException $e) {
+            return new JsonResponse("User Already Exists", StatusCode::CONFLICT);
         } catch (NoHandlerFoundException $e) {
             return new JsonResponse($e->getMessage(), StatusCode::INTERNAL_SERVER_ERROR);
         }

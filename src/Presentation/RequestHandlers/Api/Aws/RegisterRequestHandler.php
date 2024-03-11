@@ -9,6 +9,7 @@ use Billing\Application\Commands\ActivateSubscriptionCommand;
 use Billing\Application\Commands\CreateSubscriptionCommand;
 use Billing\Application\Commands\ReadPlanByTitleCommand;
 use Billing\Domain\ValueObjects\PaymentGateway;
+use Billing\Domain\ValueObjects\TrialPeriodDays;
 use Doctrine\ORM\NonUniqueResultException;
 use Easy\Container\Attributes\Inject;
 use Easy\Http\Message\RequestMethod;
@@ -23,6 +24,7 @@ use Presentation\Validation\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Shared\Domain\ValueObjects\CurrencyCode;
 use Shared\Infrastructure\CommandBus\Dispatcher;
 use Shared\Infrastructure\CommandBus\Exception\NoHandlerFoundException;
 use User\Application\Commands\CreateUserCommand;
@@ -83,10 +85,14 @@ class RegisterRequestHandler extends AwsApi implements
             $updateAwsCmd = new UpdateAwsCommand($aws->getId()->getValue());
             $this->dispatcher->dispatch($updateAwsCmd);
 
-            $subCmd = new CreateSubscriptionCommand($user, $plan, new PaymentGateway('aws'));
-            $response = $this->dispatcher->dispatch($subCmd);
+//            $subCmd = new CreateSubscriptionCommand($user, $plan, new PaymentGateway('aws'));
+//            $response = $this->dispatcher->dispatch($subCmd);
 
-            $activateCmd = new ActivateSubscriptionCommand($user, $response->subscription->getId());
+            $currency = CurrencyCode::tryFrom($this->currency ?? 'USD')
+                ?? CurrencyCode::USD;
+
+            $sub = $user->subscribeToPlan($plan, $currency, new PaymentGateway(), new TrialPeriodDays(null));
+            $activateCmd = new ActivateSubscriptionCommand($user, $sub->getId());
             $this->dispatcher->dispatch($activateCmd);
         } catch (EmailTakenException $th) {
             throw new HttpException(

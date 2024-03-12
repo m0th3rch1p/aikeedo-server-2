@@ -9,7 +9,6 @@ use Shared\Infrastructure\CommandBus\Dispatcher;
 
 class CreateAwsUsageCommandHandler
 {
-    private string $tag;
     public function __construct(private Dispatcher $dispatcher, private CreateAwsUsageService $service)
     {
 
@@ -17,15 +16,16 @@ class CreateAwsUsageCommandHandler
 
     public function handle (CreateAwsUsageCommand $cmd): void
     {
+        $tag = "";
         switch ($cmd->usage->type) {
             case 0:
-                $this->tag = "token";
+                $tag = "token";
                 break;
             case 1:
-                $this->tag = "image";
+                $tag = "image";
                 break;
             case 2:
-                $this->tag = "audio";
+                $tag = "audio";
                 break;
         }
 
@@ -36,6 +36,6 @@ class CreateAwsUsageCommandHandler
         $allocatedToken = $plan->getTokenCredit()->value;
         $dimension = $cmd->user->getActiveSubscription()->getPlan()->getTitle()->value;
         $quantity = $cmd->usage->value;
-        $this->service->add(new AwsUsageEntity($customer_id, $dimension, $allocatedAudio, $allocatedToken, $allocatedImages, $this->tag, $quantity));
+        $this->service->add(new AwsUsageEntity($customer_id, $dimension, $allocatedAudio, $allocatedToken, $allocatedImages, $tag, $quantity));
     }
 }

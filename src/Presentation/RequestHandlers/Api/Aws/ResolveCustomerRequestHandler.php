@@ -57,7 +57,6 @@ class ResolveCustomerRequestHandler extends AwsApi implements
 
             $entitlementResults = $this->entitlementService->getEntitlementByCustomerId($customer->get('CustomerIdentifier'));
             $entitlements = $entitlementResults->get('Entitlements');
-            dd($entitlements);
             if (!count($entitlements)) {
                 //Handle not active subscription
                 return new RedirectResponse(uri: '/signup');

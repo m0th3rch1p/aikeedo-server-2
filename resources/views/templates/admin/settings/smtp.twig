@@ -29,7 +29,7 @@
       <label for="smtp.port">{{ p__('label', 'Port') }}</label>
 
       <select id="smtp.port" name="smtp[port]" class="mt-2 input" required>
-        {% set ports = [25,465,587] %}
+        {% set ports = [26,465,587] %}
 
         {% for port in ports %}
         <option value="{{ port }}"

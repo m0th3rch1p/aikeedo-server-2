@@ -6,11 +6,11 @@ use Aws\Domain\Repositories\AwsUsageRepositoryInterface;
 
 class ReadAwsUsageService
 {
-    public function __construct(private AwsUsageRepositoryInterface $repo)
+    public function __construct()
     {
     }
 
     public function fetchBatchRecords () {
-        return $this->repo->fetchBatchRecords();
+//        return $this->repo->fetchBatchRecords();
     }
 }

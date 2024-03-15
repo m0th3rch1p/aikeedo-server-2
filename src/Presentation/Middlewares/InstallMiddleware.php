@@ -24,7 +24,6 @@ class InstallMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         $env = env('ENVIRONMENT', 'install');
-
         $path = $request->getUri()->getPath();
 
         if (strpos($path, '/install') === false) {

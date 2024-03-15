@@ -18,8 +18,8 @@ var/**/*
 # Code coverage output files
 coverage
 
-# .env files
-.env.example
+# ..env files
+.env*
 !.env.example
 
 # Public assets (build files)
@@ -30,3 +30,4 @@ coverage
 
 # Keep empty directories
 !**/.gitkeep
+/vendor/

@@ -46,6 +46,6 @@ return [
     'app:import:presets' => Commands\ImportPresetsCommand::class,
     'app:make:module' => Commands\MakeModuleCommand::class,
     'app:locale:extract' => Commands\ExtractLocaleMessagesCommand::class,
-    'app:aws:batch' => Commands\SendBatchRequestsCommand::class,
-    'app:aws:entitlement_listen' => Commands\EntitlementNotificationListenerCommand::class
+//    'app:aws:batch' => Commands\SendBatchRequestsCommand::class,
+//    'app:aws:entitlement_listen' => Commands\EntitlementNotificationListenerCommand::class
 ];

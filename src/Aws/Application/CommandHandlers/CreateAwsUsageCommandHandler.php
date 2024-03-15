@@ -5,6 +5,7 @@ namespace Aws\Application\CommandHandlers;
 use Aws\Application\Commands\CreateAwsUsageCommand;
 use Aws\Domain\Entities\AwsUsageEntity;
 use Aws\Domain\Services\CreateAwsUsageService;
+use Monolog\Logger;
 use Shared\Infrastructure\CommandBus\Dispatcher;
 
 class CreateAwsUsageCommandHandler
@@ -17,7 +18,7 @@ class CreateAwsUsageCommandHandler
     public function handle (CreateAwsUsageCommand $cmd): void
     {
         $tag = "";
-        switch ($cmd->usage->type) {
+        switch ($cmd->usage->type->value) {
             case 0:
                 $tag = "token";
                 break;

@@ -32,11 +32,11 @@ class AwsUsageRepository extends AbstractRepository implements  AwsUsageReposito
         // TODO: Implement fetchBatchRecords() method.
         $interval = DateInterval::createFromDateString('1 hour');
         return $this->query()
-              ->select(self::ALIAS.'.dimension', self::ALIAS.'.customerId', self::ALIAS.'.quantity', self::ALIAS.'.tag')
-//            ->where(self::ALIAS.'.createdAt <= :created_at')
-//            ->andWhere(self::ALIAS.'.createdAt >= :last_hr')
-//            ->setParameter('created_at', new \DateTime())
-//            ->setParameter('last_hr', date_sub(new \DateTime(), $interval))
+              ->select(self::ALIAS.'.dimension', self::ALIAS.'.customerId', self::ALIAS.'.quantity', self::ALIAS.'.tag', self::ALIAS.'.createdAt')
+            ->where(self::ALIAS.'.createdAt <= :created_at')
+            ->andWhere(self::ALIAS.'.createdAt >= :last_hr')
+            ->setParameter('created_at', new \DateTime())
+            ->setParameter('last_hr', date_sub(new \DateTime(), $interval))
             ->getQuery()
             ->getResult();
     }

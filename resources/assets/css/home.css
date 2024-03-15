@@ -1260,15 +1260,14 @@ body {
     padding:8px 12px;
     border-radius:4px;
     }
-    .single_social ul {
-        display: -ms-grid;
-        display: grid;
-        -ms-grid-columns: repeat(2, minmax(0, 1fr));
-        grid-column-gap: 10px;
-        grid-row-gap: 10px;
-        list-style:none;
-        -ms-grid-columns: minmax(0, 1fr) 10px minmax(0, 1fr);
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+.single_social ul {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 1fr 10px 1fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+    list-style:none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .single_social ul li{}
     .single_social ul li a{}
@@ -1430,7 +1429,7 @@ body {
     */
     .price_area {
         background:#151a32;
-    };
+    }
     .pricing-content{position:relative;}
     .pricing_design{
         position: relative;
@@ -1689,7 +1688,7 @@ body {
     /*END SOCIAL PROFILE CSS*/
     .fc {
         margin-top: 60px;
-        /* background: #2b2a5e; */
+         background: #2b2a5e;
         padding-top: 40px;
         border-top: 1px solid #5655ff;
     }

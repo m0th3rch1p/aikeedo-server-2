@@ -1927,6 +1927,9 @@ label .help:hover {
 :root[data-mode='dark'] .hljs-operator {
     opacity: 0.7;
   }
+:root[data-mode='light'] h1 {
+  color: #000 !important;
+}
 /* base08 - Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted */
 :root[data-mode='dark'] .hljs-bullet,
   :root[data-mode='dark'] .hljs-variable,

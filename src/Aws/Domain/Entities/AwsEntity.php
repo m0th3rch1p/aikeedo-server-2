@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Aws\Domain\Entities;
 
+use Awssubscription\Domain\Entities\AwssubscriptionEntity;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\Collection;
@@ -19,7 +20,7 @@ use User\Domain\Entities\UserEntity;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'aws')]
-#[ORM\UniqueConstraint(columns: ['user_id', 'customer_id', 'dimension'])]
+#[ORM\UniqueConstraint(columns: ['user_id', 'customer_id'])]
 class AwsEntity
 {
     /**
@@ -32,15 +33,15 @@ class AwsEntity
     #[ORM\Column(name: 'customer_id', length: 255)]
     private string $customer_id;
 
-    #[ORM\Column(name: 'dimension', length: 255)]
-    private string $dimension;
-
     #[ORM\OneToOne(targetEntity: UserEntity::class)]
     #[ORM\JoinColumn(name: 'user_id', nullable: true)]
     private UserEntity $user;
 
     #[ORM\OneToMany(mappedBy: 'aws', targetEntity: AwsUsageEntity::class, cascade: ['persist', 'remove'])]
     private Collection&Selectable $awsUsage;
+
+    #[ORM\OneToMany(mappedBy: 'awssubscription', targetEntity: AwssubscriptionEntity::class, cascade: ['persist', 'remove'])]
+    private Collection&Selectable $awsSubscriptions;
 
     /** Creation date and time of the entity */
     #[ORM\Column(name: 'created_at', type: 'datetime')]
@@ -53,11 +54,10 @@ class AwsEntity
     /**
      * @return void
      */
-    public function __construct(string $customerId, string $dimension)
+    public function __construct(string $customerId)
     {
         $this->id = new Id();
         $this->customer_id = $customerId;
-        $this->dimension = $dimension;
         $this->createdAt = new DateTime();
     }
 
@@ -74,10 +74,6 @@ class AwsEntity
         return $this->customer_id;
     }
 
-    public function getDimension(): string
-    {
-        return $this->dimension;
-    }
 
     public function getUser(): UserEntity
     {
@@ -117,5 +113,21 @@ class AwsEntity
     public function preUpdate(): void
     {
         $this->updatedAt = new DateTime();
+    }
+
+    /**
+     * @return Selectable&Collection
+     */
+    public function getAwsSubscriptions(): Selectable&Collection
+    {
+        return $this->awsSubscriptions;
+    }
+
+    /**
+     * @param Selectable&Collection $awsSubscriptions
+     */
+    public function setAwsSubscriptions(Selectable&Collection $awsSubscriptions): void
+    {
+        $this->awsSubscriptions = $awsSubscriptions;
     }
 }

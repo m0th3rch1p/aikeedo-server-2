@@ -40,11 +40,9 @@ class RegisterRequestHandler extends AwsApi implements
         private Validator $validator,
         #[Inject('option.site.user_accounts_enabled')]
         private bool $userAccountsEnabled = true,
-
         #[Inject('option.site.user_signup_enabled')]
-        private bool $userSignupEnabled = true)
-    {
-
+        private bool $userSignupEnabled = true
+    ) {
     }
 
     /**
@@ -56,51 +54,76 @@ class RegisterRequestHandler extends AwsApi implements
         $this->validateRequest($request);
 
         $payload = (object) $request->getParsedBody();
-
-        $cmd = new CreateUserCommand(
-            $payload->email,
-            $payload->first_name,
-            $payload->last_name
-        );
-
-        $cmd->setPassword($payload->password);
-
         try {
+            $cmd = new CreateUserCommand(
+                $payload->email,
+                $payload->first_name,
+                $payload->last_name
+            );
+
+            $cmd->setPassword($payload->password);
+
             //Setup User Subscription
             $awsCmd = new ReadByCustomerIdAwsCommand($payload->c_id);
             $aws = $this->dispatcher->dispatch($awsCmd);
 
-            $planCmd = new ReadPlanByTitleCommand($aws->getDimension());
-            $plan = $this->dispatcher->dispatch($planCmd);
+            $subscriptions = $aws->getAwsSubscriptions();
 
             $user = $this->dispatcher->dispatch($cmd);
+            $plan = null;
+            $totalTextTokens = 0;
+            $totalImageTokens = 0;
+            $totalAudioTokens = 0;
+            foreach ($subscriptions as $subscription) {
+                $planCmd = new ReadPlanByTitleCommand($subscription->getDimension());
+                $plan = $this->dispatcher->dispatch($planCmd);
+
+                $tokenUsage = $subscription->getQuantity() > 1 ?
+                    -($plan->getTokenCredit() * $subscription->getQuantity())
+                    : 0;
+                $totalTextTokens += $tokenUsage;
+
+                $imageUsage = $subscription->getQuantity() > 1 ?
+                    -($plan->getImageCredit() * $subscription->getQuantity())
+                    : 0;
+                $totalImageTokens += $imageUsage;
+
+                $audioUsage = $subscription->getQuantity() > 1 ?
+                    -($plan->getAudioCredit() * $subscription->getQuantity())
+                    : 0;
+                $totalAudioTokens += $audioUsage;
+            }
+
+            $currency = CurrencyCode::tryFrom($this->currency ?? 'USD')
+                ?? CurrencyCode::USD;
+
+            $sub = $user->subscribeToPlan(
+                $plan,
+                $currency,
+                new PaymentGateway(),
+                new TrialPeriodDays(null),
+                $totalTextTokens,
+                $totalImageTokens,
+                $totalAudioTokens
+            );
+
+            $activateCmd = new ActivateSubscriptionCommand($user, $sub->getId());
+            $this->dispatcher->dispatch($activateCmd);
 
             //Set User Entity To User
             $user->setAws($aws);
             $updateUserCmd = new UpdateUserCommand($user);
             $this->dispatcher->dispatch($updateUserCmd);
 
-            //Set Aws Entity to User
-            $aws->setUser($user);
-            $updateAwsCmd = new UpdateAwsCommand($aws->getId()->getValue());
-            $this->dispatcher->dispatch($updateAwsCmd);
-
 //            $subCmd = new CreateSubscriptionCommand($user, $plan, new PaymentGateway('aws'));
 //            $response = $this->dispatcher->dispatch($subCmd);
-
-            $currency = CurrencyCode::tryFrom($this->currency ?? 'USD')
-                ?? CurrencyCode::USD;
-
-            $sub = $user->subscribeToPlan($plan, $currency, new PaymentGateway(), new TrialPeriodDays(null));
-            $activateCmd = new ActivateSubscriptionCommand($user, $sub->getId());
-            $this->dispatcher->dispatch($activateCmd);
         } catch (EmailTakenException $th) {
             throw new HttpException(
                 message: $th->getMessage(),
                 param: 'email'
             );
         } catch (NonUniqueResultException $e) {
-            return new JsonResponse("User Already Exists", StatusCode::CONFLICT);
+            return new JsonResponse("You've already set up your account", StatusCode::CONFLICT);
         } catch (NoHandlerFoundException $e) {
             return new JsonResponse($e->getMessage(), StatusCode::INTERNAL_SERVER_ERROR);
         }
@@ -111,7 +134,7 @@ class RegisterRequestHandler extends AwsApi implements
     /**
      * @throws ValidationException
      */
-    public function validateRequest (ServerRequestInterface $req): void
+    public function validateRequest(ServerRequestInterface $req): void
     {
         if (!$this->userAccountsEnabled || !$this->userSignupEnabled) {
             throw new NotFoundException();

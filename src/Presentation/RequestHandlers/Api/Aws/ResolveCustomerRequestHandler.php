@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Presentation\RequestHandlers\Api\Aws;
@@ -10,6 +11,8 @@ use Aws\Infrastructure\Services\EntitlementService;
 use Aws\Infrastructure\Services\MeteringService;
 use Aws\MarketplaceEntitlementService\Exception\MarketplaceEntitlementServiceException;
 use Aws\MarketplaceMetering\Exception\MarketplaceMeteringException;
+use Awssubscription\Application\Commands\CreateAwssubscriptionCommand;
+use Awssubscription\Domain\Entities\AwssubscriptionEntity;
 use Easy\Http\Message\RequestMethod;
 use Easy\Http\Message\StatusCode;
 use Easy\Router\Attributes\Route;
@@ -28,11 +31,12 @@ use User\Domain\Exceptions\InvalidTokenException;
 class ResolveCustomerRequestHandler extends AwsApi implements
     RequestHandlerInterface
 {
-    public function __construct(private Validator $validator,
-                                private MeteringService $meteringService,
-                                private EntitlementService $entitlementService,
-                                private Dispatcher $dispatcher)
-    {
+    public function __construct(
+        private Validator $validator,
+        private MeteringService $meteringService,
+        private EntitlementService $entitlementService,
+        private Dispatcher $dispatcher
+    ) {
     }
 
     /**
@@ -47,7 +51,10 @@ class ResolveCustomerRequestHandler extends AwsApi implements
         $payload = $request->getParsedBody();
 
         try {
-            $customer = $this->meteringService->resolve($payload->{'x-amzn-marketplace-token'});
+            $customer = $this->meteringService->resolve(
+                $payload->{'x-amzn-marketplace-token'}
+            );
+
             if (($customer->get('CustomerIdentifier') === null) || ($customer->get('ProductCode') === null)) {
                 //Handle Error Redirection
                 return new JsonResponse(json_encode([
@@ -55,25 +62,38 @@ class ResolveCustomerRequestHandler extends AwsApi implements
                 ]), StatusCode::INTERNAL_SERVER_ERROR);
             }
 
-            $entitlementResults = $this->entitlementService->getEntitlementByCustomerId($customer->get('CustomerIdentifier'));
+            //Check if customer id already exists
+            $awsCustomerCmd = new ReadByCustomerIdAwsCommand($customer->get('CustomerIdentifier'));
+            $awsCustomer = $this->dispatcher->dispatch($awsCustomerCmd);
+            if ($awsCustomer) {
+                return new RedirectResponse("/signup");
+            }
+
+            $entitlementResults = $this->entitlementService->getEntitlementByCustomerId(
+                $customer->get('CustomerIdentifier')
+            );
             $entitlements = $entitlementResults->get('Entitlements');
             if (!count($entitlements)) {
                 //Handle not active subscription
                 return new RedirectResponse(uri: '/signup');
             }
 
-            //Check if customer id already exists
-            $awsCustomerCmd = new ReadByCustomerIdAwsCommand($customer->get('CustomerIdentifier'));
-            $awsCustomer = $this->dispatcher->dispatch($awsCustomerCmd);
-            if (!($awsCustomer)) {
-                $awsCommand = new CreateAwsCommand($customer->get('CustomerIdentifier'), $entitlements[0]['Dimension']);
-                $this->dispatcher->dispatch($awsCommand);
+            //Create Aws Customer
+            $awsCustomer = new CreateAwsCommand($customer->get('CustomerIdentifier'));
+            $awsCustomer = $this->dispatcher->dispatch($awsCustomer);
+
+            foreach ($entitlements as $entitlement) {
+                $awsSubscriptionCmd = new CreateAwssubscriptionCommand(
+                    $entitlement['Dimension'],
+                    $entitlement['EntitlementValue'],
+                    $awsCustomer
+                );
+                $this->dispatcher->dispatch($awsSubscriptionCmd);
             }
 
-
             // Finish up registration
-            return new RedirectResponse(uri: '/aws/register?c_id='.$customer->get('CustomerIdentifier'));
-        } catch (MarketplaceMeteringException|MarketplaceEntitlementServiceException $e) {
+            return new RedirectResponse(uri: '/aws/register?c_id=' . $customer->get('CustomerIdentifier'));
+        } catch (MarketplaceMeteringException | MarketplaceEntitlementServiceException $e) {
             return new JsonResponse(json_encode([
                 'message' => $e->getMessage()
             ]), StatusCode::BAD_REQUEST);
@@ -83,11 +103,10 @@ class ResolveCustomerRequestHandler extends AwsApi implements
     /**
      * @throws ValidationException
      */
-    private function validateRequest (ServerRequestInterface $request): void
+    private function validateRequest(ServerRequestInterface $request): void
     {
         $this->validator->validateRequest($request, [
             'x-amzn-marketplace-token' => 'required|string'
         ]);
     }
-
 }

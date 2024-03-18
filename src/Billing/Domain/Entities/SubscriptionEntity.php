@@ -505,6 +505,7 @@ class SubscriptionEntity
             && $this->getTokenCredit()->value === 0
             && $this->getImageCredit()->value === 0
             && $this->getAudioCredit()->value === 0
+            && !$this->user->getAws()
         ) {
             $this->status = Status::INACTIVE;
         }

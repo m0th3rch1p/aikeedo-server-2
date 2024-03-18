@@ -135,6 +135,7 @@ class ViewMiddleware implements MiddlewareInterface
             strpos($path, '/writer') !== false
             && !is_null($user->getTokenCredit()->value)
             && $user->getTokenCredit()->value <= 0
+            && !$user->getAws()
         ) {
             return true;
         }
@@ -143,6 +144,7 @@ class ViewMiddleware implements MiddlewareInterface
             strpos($path, '/coder') !== false
             && !is_null($user->getTokenCredit()->value)
             && $user->getTokenCredit()->value <= 0
+            && !$user->getAws()
         ) {
             return true;
         }
@@ -151,6 +153,7 @@ class ViewMiddleware implements MiddlewareInterface
             strpos($path, '/imagine') !== false
             && !is_null($user->getImageCredit()->value)
             && $user->getImageCredit()->value <= 0
+            && !$user->getAws()
         ) {
             return true;
         }
@@ -159,6 +162,7 @@ class ViewMiddleware implements MiddlewareInterface
             strpos($path, '/transcriber') !== false
             && !is_null($user->getAudioCredit()->value)
             && $user->getAudioCredit()->value <= 0
+            && !$user->getAws()
         ) {
             return true;
         }
@@ -167,6 +171,7 @@ class ViewMiddleware implements MiddlewareInterface
             strpos($path, '/voiceover') !== false
             && !is_null($user->getTokenCredit()->value)
             && $user->getTokenCredit()->value <= 0
+            && !$user->getAws()
         ) {
             return true;
         }

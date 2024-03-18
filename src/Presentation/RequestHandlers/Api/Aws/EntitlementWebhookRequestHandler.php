@@ -33,15 +33,6 @@ class EntitlementWebhookRequestHandler extends AwsApi implements  RequestHandler
         $this->logger->info('Entitlement SNS Notification');
         $this->logger->debug(json_encode($data));
         switch ($data->Type) {
-            case 'SubscriptionConfirmation':
-                $listResult = \Aws\Infrastructure\Services\EntitlementSnsService::listSubscriptions();
-                $names = array_column($listResult->get('Subscriptions'), 'Endpoint');
-                $found = in_array(\Aws\Infrastructure\Services\EntitlementSnsService::getHttpUrl(), $names);
-
-                if (!$found) {
-                    \Aws\Infrastructure\Services\EntitlementSnsService::confirmSubscription($data->Token, $data->TopicArn);
-                }
-                break;
             case 'EntitlementUpdated':
                 $this->logger->info('EntitlementUpdated');
                 $this->logger->debug(json_encode($data));

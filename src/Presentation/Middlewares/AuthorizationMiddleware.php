@@ -45,7 +45,6 @@ class AuthorizationMiddleware implements MiddlewareInterface
         if (strpos($path, '/admin') !== false && $user->getRole() !== Role::ADMIN) {
             throw new UnauthorizedException();
         }
-
         return $handler->handle($request);
     }
 }

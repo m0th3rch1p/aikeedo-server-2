@@ -60,7 +60,6 @@ class WriterView  extends AppView implements
                 $preset->getTemplate()->value
             );
         }
-
         return new ViewResponse(
             '/templates/app/writer.twig',
             $data

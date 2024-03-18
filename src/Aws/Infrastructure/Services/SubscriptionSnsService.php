@@ -15,7 +15,7 @@ class SubscriptionSnsService
     private static string $topicArn = "arn:aws:sns:us-east-1:287250355862:aws-mp-subscription-notification-32lxoy6fds2ky53glydfxwc5x";
     private static string $endpoint = "arn:aws:sqs:us-east-1:436917423698:chatrov2";
 
-    public static function setup (): void
+    public static function setup(): void
     {
         $credentials = new Credentials(env('AWS_KEY'), env('AWS_SECRET'));
         self::$client = new SnsClient([
@@ -25,7 +25,7 @@ class SubscriptionSnsService
         ]);
     }
 
-    public static function subscribe (): void
+    public static function subscribe(): void
     {
         self::$client->subscribe([
             'Protocol' => 'https',
@@ -34,12 +34,12 @@ class SubscriptionSnsService
         ]);
     }
 
-    public static function listSubscriptions (): \Aws\Result
+    public static function listSubscriptions(): \Aws\Result
     {
         return self::$client->listSubscriptions();
     }
 
-    public static function confirmSubscription ($token, $topicArn): \Aws\Result
+    public static function confirmSubscription($token, $topicArn): \Aws\Result
     {
         return self::$client->confirmSubscription([
             'Token' => $token,

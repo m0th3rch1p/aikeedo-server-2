@@ -41,6 +41,9 @@ line-height: 26px;
 overflow-x:hidden;
 }
 
+html[data-mode="light"] h1 {
+    color: #000;
+}
 
 html,
 body { height: 100%;position:relative;  }

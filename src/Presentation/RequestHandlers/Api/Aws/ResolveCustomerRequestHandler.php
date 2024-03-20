@@ -85,7 +85,7 @@ class ResolveCustomerRequestHandler extends AwsApi implements
             foreach ($entitlements as $entitlement) {
                 $awsSubscriptionCmd = new CreateAwssubscriptionCommand(
                     $entitlement['Dimension'],
-                    $entitlement['EntitlementValue'],
+                    $entitlement['Value']['IntegerValue'] ?? 1,
                     $awsCustomer
                 );
                 $this->dispatcher->dispatch($awsSubscriptionCmd);

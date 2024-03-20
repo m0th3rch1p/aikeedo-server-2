@@ -79,17 +79,17 @@ class RegisterRequestHandler extends AwsApi implements
                 $plan = $this->dispatcher->dispatch($planCmd);
 
                 $tokenUsage = $subscription->getQuantity() > 1 ?
-                    -($plan->getTokenCredit() * $subscription->getQuantity())
+                    -($plan->getTokenCredit() * ($subscription->getQuantity() - 1))
                     : 0;
                 $totalTextTokens += $tokenUsage;
 
                 $imageUsage = $subscription->getQuantity() > 1 ?
-                    -($plan->getImageCredit() * $subscription->getQuantity())
+                    -($plan->getImageCredit() * ($subscription->getQuantity() - 1))
                     : 0;
                 $totalImageTokens += $imageUsage;
 
                 $audioUsage = $subscription->getQuantity() > 1 ?
-                    -($plan->getAudioCredit() * $subscription->getQuantity())
+                    -($plan->getAudioCredit() * ($subscription->getQuantity() - 1))
                     : 0;
                 $totalAudioTokens += $audioUsage;
             }

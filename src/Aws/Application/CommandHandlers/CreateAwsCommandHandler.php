@@ -28,7 +28,7 @@ class CreateAwsCommandHandler
      */
     public function handle(CreateAwsCommand $cmd): AwsEntity
     {
-        $aws = new AwsEntity($cmd->customerId, $cmd->dimension);
+        $aws = new AwsEntity($cmd->customerId);
         $this->service->createAws($aws);
         return $aws;
     }

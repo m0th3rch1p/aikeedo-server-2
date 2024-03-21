@@ -66,7 +66,7 @@ class TitleGeneratorService implements TitleGeneratorServiceInterface
             'messages' => [
                 [
                     'role' => 'system',
-                    'content' => "Generate a name for the document with content provided by user. Make sure the title is relevant to the content and is not too long and is in the same language as the content."
+                    'content' => "Generate a name for the document with content provided by user. Make sure the title is relevant to the content and is not too long and is in english."
                 ],
                 [
                     'role' => 'user',

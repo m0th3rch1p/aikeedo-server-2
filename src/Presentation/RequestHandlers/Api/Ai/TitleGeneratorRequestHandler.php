@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Presentation\RequestHandlers\Api\Ai;
 
+use Ai\Domain\Exceptions\ModelNotSupportedException;
 use Ai\Domain\Services\AiServiceFactoryInterface;
 use Ai\Domain\Services\TitleGeneratorServiceInterface;
 use Billing\Application\Commands\UseCreditCommand;
 use Easy\Http\Message\RequestMethod;
 use Easy\Router\Attributes\Route;
 use Gioni06\Gpt3Tokenizer\Gpt3Tokenizer;
+use Monolog\Logger;
+use PDepend\Util\Log;
 use Presentation\EventStream\Streamer;
 use Presentation\Http\Message\CallbackStream;
 use Presentation\Response\Response;
@@ -17,7 +20,9 @@ use Preset\Domain\Placeholder\ParserService;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use SebastianBergmann\Environment\Console;
 use Shared\Infrastructure\CommandBus\Dispatcher;
+use Shared\Infrastructure\CommandBus\Exception\NoHandlerFoundException;
 use User\Domain\Entities\UserEntity;
 
 #[Route(path: '/title-generator', method: RequestMethod::GET)]
@@ -50,10 +55,13 @@ class TitleGeneratorRequestHandler extends AiServicesApi implements
             $this->callback(...),
             $request
         );
-
         return $resp->withBody($stream);
     }
 
+    /**
+     * @throws NoHandlerFoundException
+     * @throws ModelNotSupportedException
+     */
     private function callback(ServerRequestInterface $request)
     {
         /** @var UserEntity */

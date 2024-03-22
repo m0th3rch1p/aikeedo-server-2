@@ -23,7 +23,7 @@ class Count implements JsonSerializable
      */
     public function __construct(?int $value = null)
     {
-        $this->ensureValueIsValid($value);
+//        $this->ensureValueIsValid($value);
         $this->value = $value;
     }
 
@@ -40,7 +40,7 @@ class Count implements JsonSerializable
      */
     private function ensureValueIsValid(?int $value): void
     {
-        if (!is_null($value) && $value < 0) {
+        if (!is_null($value)) {
             throw new InvalidValueException(sprintf(
                 '<%s> does not allow the value <%s>. Value must greater than 0.',
                 static::class,

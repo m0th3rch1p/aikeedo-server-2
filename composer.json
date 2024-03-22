@@ -60,7 +60,8 @@
         "aws/aws-sdk-php": "^3.297",
         "symfony/messenger": "^7.0",
         "symfony/property-info": "^7.0",
-        "symfony/scheduler": "^7.0"
+        "symfony/scheduler": "^7.0",
+        "symfony/orm-pack": "^2.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
@@ -69,7 +70,8 @@
         "phpmd/phpmd": "^2.13",
         "phpcompatibility/php-compatibility": "^9.3",
         "kint-php/kint": "^5.0",
-        "symfony/var-dumper": "^6.3"
+        "symfony/var-dumper": "^6.3",
+        "symfony/maker-bundle": "^1.56"
     },
     "scripts": {
         "phpstan": "phpstan analyse",

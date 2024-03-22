@@ -1930,6 +1930,32 @@ label .help:hover {
 :root[data-mode='light'] h1 {
   color: #000 !important;
 }
+:root[data-mode='light'] h2 {
+  color: #000 !important;
+}
+:root[data-mode='light'] h3 {
+  color: #000 !important;
+}
+:root[data-mode='light'] h4 {
+  color: #000 !important;
+}
+:root[data-mode='light'] h5 {
+  color: #000 !important;
+}
+:root[data-mode='light'] h6 {
+  color: #000 !important;
+}
+
+:root[data-mode='light'] a {
+  color: #000 !important;
+}
+:root[data-mode='light'] div {
+  color: #000 !important;
+}
+
+:root[data-mode='dark'] h3 {
+  color: #fff !important;
+}
 /* base08 - Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted */
 :root[data-mode='dark'] .hljs-bullet,
   :root[data-mode='dark'] .hljs-variable,

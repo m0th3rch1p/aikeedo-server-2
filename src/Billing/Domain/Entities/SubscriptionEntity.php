@@ -115,7 +115,10 @@ class SubscriptionEntity
         PlanEntity $plan,
         CurrencyCode $currency,
         PaymentGateway $paymentGateway,
-        TrialPeriodDays $trialPeriodDays
+        TrialPeriodDays $trialPeriodDays,
+        int $tokenUsage = 0,
+        int $imageUsage = 0,
+        int $audioUsage = 0
     ) {
         if (!$plan->isActive()) {
             // Subscriptions can be created 
@@ -134,9 +137,9 @@ class SubscriptionEntity
             : $trialPeriodDays;
         $this->paymentGateway = $paymentGateway;
 
-        $this->tokenUsage = new Count(0);
-        $this->imageUsage = new Count(0);
-        $this->audioUsage = new Count(0);
+        $this->tokenUsage = new Count($tokenUsage);
+        $this->imageUsage = new Count($imageUsage);
+        $this->audioUsage = new Count($audioUsage);
 
         $this->externalId = new ExternalId();
         $this->externalCustomerId = $this->findExternalCustomerId();

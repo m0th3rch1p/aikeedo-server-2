@@ -17,8 +17,8 @@ $dotenv = Dotenv::createImmutable(
 
 // Load configuration.
 $config = new Config();
-
-$webroot = $rootDir . '/public';
+$publicPath = env("PLATFORM") == "dev" ? '/public' :  '/../public_html';
+$webroot = $rootDir.$publicPath;
 $config->set('dirs', [
     'root' => $rootDir,
     'webroot' => $webroot,

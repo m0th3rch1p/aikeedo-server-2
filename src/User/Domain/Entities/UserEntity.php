@@ -456,7 +456,10 @@ class UserEntity
         PlanEntity $plan,
         CurrencyCode $currency,
         PaymentGateway $paymentGateway,
-        TrialPeriodDays $trialPeriodDays
+        TrialPeriodDays $trialPeriodDays,
+        int $tokenUsage = 0,
+        int $imageUsage = 0,
+        int $audioUsage = 0
     ): SubscriptionEntity {
         $sub = new SubscriptionEntity(
             $this,
@@ -465,7 +468,10 @@ class UserEntity
             $paymentGateway,
             $this->isEligibleForTrial()
                 ? $trialPeriodDays
-                : new TrialPeriodDays(null)
+                : new TrialPeriodDays(null),
+            $tokenUsage,
+            $imageUsage,
+            $audioUsage
         );
 
         $this->subscriptions->add($sub);
